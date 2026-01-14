@@ -1,0 +1,2762 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>财财cos后期价格速算</title>
+    <style>
+        /* 所有原有样式保持不变 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "PingFang SC", -apple-system, sans-serif;
+        }
+        
+        body {
+            background: #f5f5f5;
+            padding: 10px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 1.4rem;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .subtitle-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            text-align: center;
+            margin: 0 auto 20px;
+            display: block;
+        }
+        
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #4A86E8;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+        
+        .clear-btn {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .clear-btn:hover {
+            background: #ff5252;
+        }
+        
+        .add-btn {
+            background: #4A86E8;
+            color: white;
+        }
+        
+        .add-btn:hover {
+            background: #3a76d8;
+        }
+        
+        .service-pool {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .service-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .service-checkbox {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .selected-services-list {
+            min-height: 50px;
+        }
+        
+        .selected-item {
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .service-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .number-input {
+            width: 80px;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            background: white;
+        }
+        
+        .number-input:focus {
+            border-color: #4A86E8;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 134, 232, 0.2);
+        }
+        
+        .number-input::placeholder {
+            color: #999;
+            opacity: 0.7;
+        }
+        
+        .unit {
+            font-size: 0.9rem;
+            color: #666;
+            white-space: nowrap;
+        }
+        
+        .discount-select {
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 100px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .discount-select:focus {
+            border-color: #4A86E8;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 134, 232, 0.2);
+        }
+        
+        .discount-input {
+            width: 80px;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+            background: white;
+        }
+        
+        .discount-input:focus {
+            border-color: #4A86E8;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 134, 232, 0.2);
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .small-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            background: #666;
+            color: white;
+            flex: 1;
+            min-width: 80px;
+            transition: background-color 0.2s;
+        }
+        
+        .note-btn {
+            background: #4A86E8;
+        }
+        
+        .note-btn:hover {
+            background: #3a76d8;
+        }
+        
+        .remove-btn {
+            background: #ff6b6b;
+        }
+        
+        .remove-btn:hover {
+            background: #ff5252;
+        }
+        
+        .subtotal {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f0f7ff;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #333;
+            text-align: center;
+        }
+        
+        .total-section {
+            background: #e8f4ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background: #4A86E8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+        }
+        
+        .calculate-btn:hover {
+            background: #3a76d8;
+        }
+        
+        .receipt {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border: 2px solid #000;
+            border-radius: 8px;
+        }
+        
+        .receipt.visible {
+            display: block;
+        }
+        
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #000;
+        }
+        
+        .receipt-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .receipt-service {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .receipt-total {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .receipt-total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .final-total {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ff0000;
+            border-top: 2px solid #000;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        
+        .global-section {
+            margin-top: 20px;
+        }
+        
+        .note-textarea {
+            width: 100%;
+            height: 80px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            resize: vertical;
+            background: white;
+        }
+        
+        .note-textarea:focus {
+            border-color: #4A86E8;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 134, 232, 0.2);
+        }
+        
+        .upload-area {
+            width: 100%;
+            padding: 15px;
+            background: #f9f9f9;
+            border: 2px dashed #ccc;
+            border-radius: 6px;
+            text-align: center;
+            color: #666;
+            margin-bottom: 15px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .upload-area:hover {
+            background: #f0f0f0;
+        }
+        
+        .upload-text {
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+        
+        .upload-hint {
+            font-size: 0.85rem;
+            color: #999;
+        }
+        
+        .file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .image-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .preview-item {
+            position: relative;
+            width: 100%;
+            padding-top: 100%;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+        
+        .preview-item:hover {
+            border-color: #4A86E8;
+            box-shadow: 0 2px 8px rgba(74, 134, 232, 0.3);
+        }
+        
+        .preview-item img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .remove-img {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 18px;
+            height: 18px;
+            background: rgba(255,0,0,0.7);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 18px;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        /* 新增：图片放大预览模态框样式 */
+        .image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        
+        .image-modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .image-modal-img {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+        
+        .image-modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 36px;
+            font-size: 20px;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .image-modal-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .image-modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.3);
+            display: none;
+        }
+        
+        .image-modal-nav:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .image-modal-prev {
+            left: 20px;
+        }
+        
+        .image-modal-next {
+            right: 20px;
+        }
+        
+        .image-modal-nav.visible {
+            display: block;
+        }
+        
+        .image-modal-counter {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 16px;
+        }
+        
+        /* 新增：加急费和商用费样式 */
+        .extra-fees-section {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #ffb74d;
+        }
+        
+        .extra-fee-item {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ffb74d;
+        }
+        
+        .extra-fee-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .extra-fee-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        
+        .extra-fee-header input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .extra-fee-name {
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+        
+        .extra-fee-settings {
+            display: none;
+            margin-top: 10px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #ffb74d;
+        }
+        
+        .extra-fee-settings.visible {
+            display: block;
+        }
+        
+        .extra-fee-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .extra-fee-methods {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .extra-fee-method-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px 5px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .extra-fee-method-btn:hover {
+            border-color: #4A86E8;
+            background: #f0f7ff;
+        }
+        
+        .extra-fee-method-btn.active {
+            border-color: #4A86E8;
+            background: #4A86E8;
+            color: white;
+        }
+        
+        .extra-fee-custom {
+            margin-top: 10px;
+        }
+        
+        .extra-fee-summary {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #333;
+            display: none;
+        }
+        
+        .extra-fee-summary.visible {
+            display: block;
+        }
+        
+        /* 定金设置部分新增样式 */
+        .deposit-section {
+            background: #fff8e1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #ffd54f;
+        }
+        
+        .deposit-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        
+        .deposit-toggle input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .deposit-settings {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #ffd54f;
+        }
+        
+        .deposit-settings.visible {
+            display: block;
+        }
+        
+        .deposit-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .deposit-method-btn {
+            width: 100%;
+            padding: 10px 5px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .deposit-method-btn:hover {
+            border-color: #4A86E8;
+            background: #f0f7ff;
+        }
+        
+        .deposit-method-btn.active {
+            border-color: #4A86E8;
+            background: #4A86E8;
+            color: white;
+        }
+        
+        .deposit-custom {
+            margin-top: 15px;
+        }
+        
+        .deposit-summary {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            display: none;
+        }
+        
+        .deposit-summary.visible {
+            display: block;
+        }
+        
+        .deposit-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+        
+        .deposit-final {
+            font-weight: 600;
+            color: #ff0000;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 5px;
+        }
+        
+        /* 小票中的定金信息样式 */
+        .receipt-deposit {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff8e1;
+            border-radius: 6px;
+            border: 1px solid #ffd54f;
+        }
+        
+        .receipt-deposit-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+        
+        /* 小票中的额外费用样式 */
+        .receipt-extra-fees {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3e0;
+            border-radius: 6px;
+            border: 1px solid #ffb74d;
+        }
+        
+        .receipt-extra-fee-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+        
+        .receipt-extra-fee-description {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 3px;
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 15px;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .modal-textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            resize: vertical;
+            background: white;
+        }
+        
+        .modal-textarea:focus {
+            border-color: #4A86E8;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 134, 232, 0.2);
+        }
+        
+        .modal-upload-area {
+            width: 100%;
+            padding: 12px;
+            background: #f9f9f9;
+            border: 2px dashed #ccc;
+            border-radius: 6px;
+            text-align: center;
+            color: #666;
+            margin-bottom: 15px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .modal-upload-text {
+            font-size: 0.9rem;
+            margin-bottom: 3px;
+        }
+        
+        .modal-upload-hint {
+            font-size: 0.8rem;
+            color: #999;
+        }
+        
+        .modal-image-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .cancel-btn {
+            background: #ccc;
+            color: #333;
+        }
+        
+        .save-btn {
+            background: #4A86E8;
+            color: white;
+        }
+        
+        /* 空状态提示 */
+        .empty-tip {
+            text-align: center;
+            color: #999;
+            padding: 30px;
+            font-style: italic;
+        }
+        
+        /* 小票中的图片预览 */
+        .receipt-image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .receipt-image-item {
+            width: 50px;
+            height: 50px;
+            border-radius: 3px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+        
+        .receipt-image-item:hover {
+            border-color: #4A86E8;
+            box-shadow: 0 2px 4px rgba(74, 134, 232, 0.3);
+        }
+        
+        .receipt-image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* 移动端优化 */
+@media (max-width: 768px) {
+    .container {
+        padding: 8px;
+    }
+    
+    .section {
+        padding: 10px;
+    }
+    
+    .service-pool {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    /* 重点修改：输入行在手机上保持水平布局 */
+    .input-row {
+        flex-direction: row !important; /* 强制保持水平 */
+        align-items: center;
+        gap: 5px; /* 减小间距 */
+        flex-wrap: wrap; /* 允许换行 */
+        margin-bottom: 8px;
+    }
+    
+    /* 输入组调整 */
+    .input-group {
+        display: flex;
+        align-items: center;
+        gap: 3px; /* 减小内部间距 */
+        flex: 1; /* 允许弹性收缩 */
+        min-width: 120px; /* 设置最小宽度，防止太小 */
+    }
+    
+    /* 数字输入框调整 */
+    .number-input {
+        width: 60px !important; /* 减小宽度 */
+        padding: 6px 8px; /* 减小内边距 */
+        font-size: 0.9rem;
+        flex: 1; /* 允许弹性 */
+    }
+    
+    /* 单位文字调整 */
+    .unit {
+        font-size: 0.85rem;
+        white-space: nowrap;
+        min-width: 30px; /* 给单位留最小空间 */
+    }
+    
+    /* 折扣选择器调整 */
+    .discount-select {
+        width: 100%;
+        min-width: 100px; /* 设置最小宽度 */
+        padding: 6px 8px;
+        font-size: 0.9rem;
+    }
+    
+    .discount-input {
+        width: 60px !important;
+        padding: 6px 8px;
+        font-size: 0.9rem;
+    }
+    
+    .service-header {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+    
+    /* 服务名称在小屏幕上换行 */
+    .service-name {
+        font-size: 0.95rem;
+        word-break: break-word;
+    }
+    
+    .upload-area {
+        padding: 10px;
+    }
+    
+    .upload-text {
+        font-size: 0.9rem;
+    }
+    
+    .upload-hint {
+        font-size: 0.8rem;
+    }
+    
+    .modal-content {
+        padding: 12px;
+    }
+    
+    .image-preview {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+    }
+    
+    .deposit-methods {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    
+    .deposit-method-btn {
+        padding: 8px 4px;
+        font-size: 0.85rem;
+    }
+    
+    .extra-fee-methods {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .extra-fee-method-btn {
+        min-width: 100%;
+        padding: 8px 4px;
+        font-size: 0.85rem;
+    }
+    
+    .image-modal-nav {
+        width: 36px;
+        height: 36px;
+        line-height: 36px;
+        font-size: 18px;
+    }
+    
+    .global-buttons-container, .modal-buttons-container {
+        flex-direction: row; /* 保持水平布局 */
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .global-buttons-container button, .modal-buttons-container button {
+        width: auto;
+        flex: 1;
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+    
+    /* 小按钮调整 */
+    .small-btn {
+        padding: 6px 10px;
+        font-size: 0.85rem;
+        min-width: 70px;
+    }
+    
+    /* 子总计区域调整 */
+    .subtotal {
+        padding: 8px;
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+    
+    /* 选中服务项调整 */
+    .selected-item {
+        padding: 12px;
+    }
+    
+    /* 总价区域调整 */
+    .total-section {
+        padding: 15px;
+    }
+    
+    .total-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+    
+    /* 确保总折扣选择器在一行 */
+    .total-row > div {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    
+    /* 额外费用区域调整 */
+    .extra-fees-section, .deposit-section {
+        padding: 12px;
+    }
+    
+    /* 计算按钮调整 */
+    .calculate-btn {
+        padding: 12px;
+        font-size: 1rem;
+        margin-top: 15px;
+    }
+}            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .image-preview {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .modal-image-preview {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .deposit-methods {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .image-modal-nav {
+                width: 36px;
+                height: 36px;
+                line-height: 36px;
+                font-size: 18px;
+            }
+            
+            .image-modal-prev {
+                left: 10px;
+            }
+            
+            .image-modal-next {
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>财财cos后期价格速算</h1>
+        <input type="text" class="subtitle-input" id="subtitle-input" placeholder="修图师姓名">
+        
+        <!-- 已选服务 -->
+        <div class="section">
+            <div class="section-title">已选服务</div>
+            <div class="btn-group">
+                <button class="btn clear-btn" id="clearAllBtn">清空已选</button>
+                <button class="btn add-btn" id="addCustomBtn">添加自定义服务</button>
+            </div>
+            <div class="selected-services-list" id="selectedServices">
+                <div class="empty-tip">暂无选中服务，请从下方备选池勾选或添加自定义服务</div>
+            </div>
+        </div>
+        
+        <!-- 备选服务池 -->
+        <div class="section">
+            <div class="section-title">固定服务备选池</div>
+            <div class="service-pool" id="servicePool">
+                <div class="service-item">
+                    <input type="checkbox" data-id="1" data-name="精修" class="service-checkbox">
+                    <span class="service-name">精修</span>
+                </div>
+                <div class="service-item">
+                    <input type="checkbox" data-id="2" data-name="简修（普修）" class="service-checkbox">
+                    <span class="service-name">简修（普修）</span>
+                </div>
+                <div class="service-item">
+                    <input type="checkbox" data-id="3" data-name="画头发" class="service-checkbox">
+                    <span class="service-name">画头发</span>
+                </div>
+                <div class="service-item">
+                    <input type="checkbox" data-id="4" data-name="加背景" class="service-checkbox">
+                    <span class="service-name">加背景</span>
+                </div>
+                <div class="service-item">
+                    <input type="checkbox" data-id="5" data-name="调色" class="service-checkbox">
+                    <span class="service-name">调色</span>
+                </div>
+                <div class="service-item">
+                    <input type="checkbox" data-id="6" data-name="加特效" class="service-checkbox">
+                    <span class="service-name">加特效</span>
+                </div>
+                <div class="service-item">
+                    <input type="checkbox" data-id="7" data-name="修bug" class="service-checkbox">
+                    <span class="service-name">修bug</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 计算区域 -->
+        <div class="total-section">
+            <div class="total-row">
+                <span>总订单折扣：</span>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <select class="discount-select" id="total-discount-select">
+                        <option value="100">无折扣</option>
+                        <option value="95">95折</option>
+                        <option value="90">9折</option>
+                        <option value="88">88折</option>
+                        <option value="85">85折</option>
+                        <option value="80">8折</option>
+                        <option value="75">75折</option>
+                        <option value="70">7折</option>
+                        <option value="50">5折</option>
+                        <option value="other">其他</option>
+                    </select>
+                    <input type="number" class="discount-input" id="total-discount-input" placeholder="100" min="0" max="100" step="0.01" style="display: none;">
+                    <span>%</span>
+                </div>
+            </div>
+            
+            <!-- 新增：加急费和商用费 -->
+            <div class="extra-fees-section" id="extra-fees-section">
+                <div class="extra-fee-item">
+                    <div class="extra-fee-header">
+                        <input type="checkbox" id="enable-rush-fee">
+                        <label for="enable-rush-fee" class="extra-fee-name">加急费</label>
+                    </div>
+                    
+                    <div class="extra-fee-settings" id="rush-fee-settings">
+                        <div class="extra-fee-description">
+                            加急服务：在标准交付时间内加快处理，收取额外费用
+                        </div>
+                        
+                        <div class="extra-fee-methods">
+                            <button class="extra-fee-method-btn" data-multiplier="1.5">1.5倍</button>
+                            <button class="extra-fee-method-btn" data-multiplier="2">2倍</button>
+                            <button class="extra-fee-method-btn" data-multiplier="3">3倍</button>
+                        </div>
+                        
+                        <div class="extra-fee-custom">
+                            <div style="margin-bottom: 10px; font-size: 0.95rem; color: #666;">或自定义倍率：</div>
+                            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                                <input type="number" class="number-input" id="rush-fee-multiplier" placeholder="倍率" min="1" step="0.1" value="1.5">
+                                <span class="unit">倍</span>
+                            </div>
+                        </div>
+                        
+                        <div class="extra-fee-summary" id="rush-fee-summary">
+                            加急费计算方式：基础价格 × <span id="rush-fee-multiplier-display">1.5</span>倍
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="extra-fee-item">
+                    <div class="extra-fee-header">
+                        <input type="checkbox" id="enable-commercial-fee">
+                        <label for="enable-commercial-fee" class="extra-fee-name">商用授权费</label>
+                    </div>
+                    
+                    <div class="extra-fee-settings" id="commercial-fee-settings">
+                        <div class="extra-fee-description">
+                            商用授权：用于商业用途（如广告、产品包装、出版物等），需支付额外授权费用
+                        </div>
+                        
+                        <div class="extra-fee-methods">
+                            <button class="extra-fee-method-btn" data-multiplier="1.5">1.5倍</button>
+                            <button class="extra-fee-method-btn" data-multiplier="2">2倍</button>
+                            <button class="extra-fee-method-btn" data-multiplier="3">3倍</button>
+                        </div>
+                        
+                        <div class="extra-fee-custom">
+                            <div style="margin-bottom: 10px; font-size: 0.95rem; color: #666;">或自定义倍率：</div>
+                            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                                <input type="number" class="number-input" id="commercial-fee-multiplier" placeholder="倍率" min="1" step="0.1" value="1.5">
+                                <span class="unit">倍</span>
+                            </div>
+                        </div>
+                        
+                        <div class="extra-fee-summary" id="commercial-fee-summary">
+                            商用授权费计算方式：基础价格 × <span id="commercial-fee-multiplier-display">1.5</span>倍
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 新增：定金设置 -->
+            <div class="deposit-section" id="deposit-section">
+                <div class="deposit-toggle" id="deposit-toggle">
+                    <input type="checkbox" id="enable-deposit">
+                    <label for="enable-deposit" style="font-weight: 600; color: #333;">设置定金/尾款</label>
+                </div>
+                
+                <div class="deposit-settings" id="deposit-settings">
+                    <div style="margin-bottom: 15px; font-size: 0.95rem; color: #666;">
+                        选择定金比例：
+                    </div>
+                    
+                    <div class="deposit-methods">
+                        <button class="deposit-method-btn" data-percent="10">10%定金</button>
+                        <button class="deposit-method-btn" data-percent="20">20%定金</button>
+                        <button class="deposit-method-btn" data-percent="30">30%定金</button>
+                        <button class="deposit-method-btn" data-percent="50">50%定金</button>
+                        <button class="deposit-method-btn" data-percent="60">60%定金</button>
+                        <button class="deposit-method-btn" data-percent="90">90%定金</button>
+                    </div>
+                    
+                    <div class="deposit-custom">
+                        <div style="margin-bottom: 10px; font-size: 0.95rem; color: #666;">或自定义：</div>
+                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            <input type="number" class="number-input" id="deposit-amount" placeholder="金额" min="0" step="0.1">
+                            <span class="unit">元</span>
+                            <span style="color: #666;">或</span>
+                            <input type="number" class="number-input" id="deposit-percent" placeholder="百分比" min="0" max="100" step="1">
+                            <span class="unit">%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="deposit-summary" id="deposit-summary">
+                        <div class="deposit-row">
+                            <span>应付总价：</span>
+                            <span id="deposit-total-price">0.0 元</span>
+                        </div>
+                        <div class="deposit-row">
+                            <span>定金金额：</span>
+                            <span id="deposit-amount-display">0.0 元</span>
+                        </div>
+                        <div class="deposit-row">
+                            <span>尾款金额：</span>
+                            <span id="deposit-balance">0.0 元</span>
+                        </div>
+                        <div class="deposit-row deposit-final">
+                            <span>定金支付后剩余尾款：</span>
+                            <span id="deposit-final-balance">0.0 元</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="calculate-btn" class="calculate-btn">生成报价单</button>
+        </div>
+        
+        <!-- 小票区域 -->
+        <div class="receipt" id="receipt">
+            <div class="receipt-header">
+                <div class="receipt-title">财财cos后期报价单</div>
+                <div id="receipt-subtitle" style="font-size: 0.9rem; color: #666;"></div>
+                <div id="receipt-date" style="font-size: 0.8rem; color: #999; margin-top: 5px;"></div>
+            </div>
+            
+            <div id="receipt-services"></div>
+            
+            <div class="receipt-total">
+                <div class="receipt-total-row">
+                    <span>原价：</span>
+                    <span id="receipt-original-price">0.0 元</span>
+                </div>
+                <div class="receipt-total-row">
+                    <span>单服务折后：</span>
+                    <span id="receipt-discount-total">0.0 元</span>
+                </div>
+                <div class="receipt-total-row">
+                    <span>加急/商用费用：</span>
+                    <span id="receipt-extra-fees-total">0.0 元</span>
+                </div>
+                <div class="receipt-total-row final-total">
+                    <span>应付价格：</span>
+                    <span id="receipt-final-price">0.0 元</span>
+                </div>
+            </div>
+            
+            <!-- 新增：小票中的额外费用信息 -->
+            <div class="receipt-extra-fees" id="receipt-extra-fees-section" style="display: none;">
+                <div style="font-weight: 600; margin-bottom: 15px; color: #333;">额外费用明细</div>
+                <div id="receipt-extra-fees-details"></div>
+            </div>
+            
+            <!-- 新增：小票中的定金信息 -->
+            <div class="receipt-deposit" id="receipt-deposit-section" style="display: none;">
+                <div style="font-weight: 600; margin-bottom: 15px; color: #333;">定金/尾款信息</div>
+                <div class="receipt-deposit-row">
+                    <span>定金金额：</span>
+                    <span id="receipt-deposit-amount">0.0 元</span>
+                </div>
+                <div class="receipt-deposit-row">
+                    <span>尾款金额：</span>
+                    <span id="receipt-balance-amount">0.0 元</span>
+                </div>
+                <div class="receipt-deposit-row">
+                    <span>定金比例：</span>
+                    <span id="receipt-deposit-percent">0%</span>
+                </div>
+                <div style="margin-top: 10px; font-size: 0.9rem; color: #666; padding: 10px; background: #f8f9fa; border-radius: 4px;">
+                    支付说明：请先支付定金开始修图，修图完成后支付尾款获取成片。
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <div style="font-weight: 600; margin-bottom: 10px;">整体备注</div>
+                <div id="receipt-notes-content" style="color: #666; line-height: 1.5;">无备注</div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <div style="font-weight: 600; margin-bottom: 10px;">整体参考图片</div>
+                <div class="image-preview" id="receipt-global-images-grid">
+                    <span style="color: #999; font-style: italic;">无参考图片</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 全局备注和图片上传 -->
+        <div class="global-section">
+            <div class="section-title">整体需求备注和参考图片</div>
+            <textarea class="note-textarea" id="global-note-input" placeholder="可填写整体需求：比如交付时间、特殊风格要求、文件格式需求等..."></textarea>
+            
+            <div class="upload-area" id="upload-area">
+                <div class="upload-text">点击上传整体参考图片</div>
+                <div class="upload-hint">支持多选，支持jpg、png等格式</div>
+                <input type="file" id="global-file-upload" class="file-input" multiple accept="image/*">
+            </div>
+            
+            <div class="image-preview" id="global-img-preview">
+                <span style="color: #999; font-style: italic;">未上传图片</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 服务备注弹窗（包含图片上传） -->
+    <div class="modal" id="note-modal">
+        <div class="modal-content">
+            <div class="modal-title" id="modal-title">服务备注和参考图片</div>
+            <textarea class="modal-textarea" id="note-content" placeholder="可填写备注信息，比如修图要求、特殊说明等..."></textarea>
+            
+            <div class="modal-upload-area" id="modal-upload-area">
+                <div class="modal-upload-text">点击上传服务参考图片</div>
+                <div class="modal-upload-hint">支持多选，支持jpg、png等格式</div>
+                <input type="file" id="modal-file-upload" class="file-input" multiple accept="image/*">
+            </div>
+            
+            <div class="modal-image-preview" id="modal-image-preview">
+                <span style="color: #999; font-style: italic; grid-column: 1/-1;">未上传图片</span>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" id="noteCancelBtn">取消</button>
+                <button class="modal-btn save-btn" id="noteSaveBtn">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 自定义服务名称弹窗 -->
+    <div class="modal" id="custom-name-modal">
+        <div class="modal-content">
+            <div class="modal-title">输入自定义服务名称</div>
+            <input type="text" class="note-textarea" id="custom-name-input" placeholder="例如：换脸、去水印、调色等" style="height: 50px;">
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" id="customCancelBtn">取消</button>
+                <button class="modal-btn save-btn" id="customSaveBtn">确认添加</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 新增：图片放大预览模态框 -->
+    <div class="image-modal" id="image-modal">
+        <div class="image-modal-content">
+            <img class="image-modal-img" id="image-modal-img" src="" alt="预览图片">
+            <div class="image-modal-close" id="image-modal-close">×</div>
+            <div class="image-modal-nav image-modal-prev" id="image-modal-prev">‹</div>
+            <div class="image-modal-nav image-modal-next" id="image-modal-next">›</div>
+            <div class="image-modal-counter" id="image-modal-counter">1 / 1</div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentServiceId = 0;
+        const serviceNotes = {};
+        const serviceImages = {};
+        let selectedServiceIds = [];
+        let customServiceIndex = 100;
+        let globalImages = [];
+        let depositSettings = {
+            enabled: false,
+            amount: 0,
+            percent: 0,
+            type: 'percent' // 'percent' 或 'amount'
+        };
+        
+        // 额外费用设置
+        let extraFeesSettings = {
+            rushFee: {
+                enabled: false,
+                multiplier: 1.5,
+                type: 'multiplier' // 'multiplier' 或 'custom'
+            },
+            commercialFee: {
+                enabled: false,
+                multiplier: 1.5,
+                type: 'multiplier' // 'multiplier' 或 'custom'
+            }
+        };
+        
+        // 图片预览相关变量
+        let currentPreviewImages = [];
+        let currentPreviewIndex = 0;
+        let currentPreviewType = ''; // 'global', 'service', 'receipt-service', 'receipt-global'
+        let currentPreviewServiceId = '';
+        
+        // 页面加载
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+        });
+        
+        function initApp() {
+            // 全局图片上传
+            const globalUploadArea = document.getElementById('upload-area');
+            const globalFileInput = document.getElementById('global-file-upload');
+            
+            globalUploadArea.addEventListener('click', function(e) {
+                if (e.target.id === 'global-file-upload') return;
+                globalFileInput.click();
+            });
+            
+            globalFileInput.addEventListener('change', function(e) {
+                handleFileUpload(e.target.files, 'global');
+                this.value = '';
+            });
+            
+            // 服务备注模态框图片上传
+            const modalUploadArea = document.getElementById('modal-upload-area');
+            const modalFileInput = document.getElementById('modal-file-upload');
+            
+            modalUploadArea.addEventListener('click', function(e) {
+                if (e.target.id === 'modal-file-upload') return;
+                modalFileInput.click();
+            });
+            
+            modalFileInput.addEventListener('change', function(e) {
+                handleFileUpload(e.target.files, 'service');
+                this.value = '';
+            });
+            
+            // 绑定图片预览相关事件
+            bindImagePreviewEvents();
+            
+            bindEvents();
+        }
+        
+        function bindImagePreviewEvents() {
+            // 图片预览关闭按钮
+            document.getElementById('image-modal-close').addEventListener('click', function() {
+                document.getElementById('image-modal').style.display = 'none';
+            });
+            
+            // 上一张图片
+            document.getElementById('image-modal-prev').addEventListener('click', function() {
+                if (currentPreviewImages.length > 1) {
+                    currentPreviewIndex = (currentPreviewIndex - 1 + currentPreviewImages.length) % currentPreviewImages.length;
+                    updatePreviewImage();
+                }
+            });
+            
+            // 下一张图片
+            document.getElementById('image-modal-next').addEventListener('click', function() {
+                if (currentPreviewImages.length > 1) {
+                    currentPreviewIndex = (currentPreviewIndex + 1) % currentPreviewImages.length;
+                    updatePreviewImage();
+                }
+            });
+            
+            // 点击模态框背景关闭
+            document.getElementById('image-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            // 键盘导航
+            document.addEventListener('keydown', function(e) {
+                const modal = document.getElementById('image-modal');
+                if (modal.style.display === 'flex') {
+                    if (e.key === 'Escape' || e.key === 'Esc') {
+                        modal.style.display = 'none';
+                    } else if (e.key === 'ArrowLeft') {
+                        document.getElementById('image-modal-prev').click();
+                    } else if (e.key === 'ArrowRight') {
+                        document.getElementById('image-modal-next').click();
+                    }
+                }
+            });
+        }
+        
+        function bindEvents() {
+            // 清空按钮
+            document.getElementById('clearAllBtn').addEventListener('click', clearAllServices);
+            
+            // 添加自定义服务按钮
+            document.getElementById('addCustomBtn').addEventListener('click', showCustomModal);
+            
+            // 计算按钮
+            document.getElementById('calculate-btn').addEventListener('click', calculateTotal);
+            
+            // 模态框按钮
+            document.getElementById('noteCancelBtn').addEventListener('click', function() {
+                document.getElementById('note-modal').style.display = 'none';
+            });
+            
+            document.getElementById('customCancelBtn').addEventListener('click', function() {
+                document.getElementById('custom-name-modal').style.display = 'none';
+            });
+            
+            document.getElementById('noteSaveBtn').addEventListener('click', saveNote);
+            document.getElementById('customSaveBtn').addEventListener('click', saveCustomService);
+            
+            // 总折扣选择变化
+            document.getElementById('total-discount-select').addEventListener('change', function() {
+                const input = document.getElementById('total-discount-input');
+                input.style.display = this.value === 'other' ? 'block' : 'none';
+            });
+            
+            // 额外费用相关事件
+            bindExtraFeesEvents();
+            
+            // 定金功能相关事件
+            bindDepositEvents();
+            
+            // 服务池勾选事件
+            document.querySelectorAll('.service-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const id = this.dataset.id;
+                    const name = this.dataset.name;
+                    
+                    if (this.checked) {
+                        if (!selectedServiceIds.includes(id)) {
+                            selectedServiceIds.push(id);
+                            createServiceItem(id, name, false);
+                        }
+                    } else {
+                        removeServiceItem(id, false);
+                    }
+                    updateEmptyTip();
+                });
+            });
+            
+            // 点击模态框外部关闭
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.style.display = 'none';
+                    }
+                });
+            });
+        }
+        
+        function bindExtraFeesEvents() {
+            // 加急费开关
+            const rushFeeToggle = document.getElementById('enable-rush-fee');
+            const rushFeeSettings = document.getElementById('rush-fee-settings');
+            
+            rushFeeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    rushFeeSettings.classList.add('visible');
+                    // 默认选择1.5倍
+                    document.querySelectorAll('#rush-fee-settings .extra-fee-method-btn')[0].click();
+                    extraFeesSettings.rushFee.enabled = true;
+                } else {
+                    rushFeeSettings.classList.remove('visible');
+                    document.getElementById('rush-fee-summary').classList.remove('visible');
+                    // 清空所有按钮的active状态
+                    document.querySelectorAll('#rush-fee-settings .extra-fee-method-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    extraFeesSettings.rushFee.enabled = false;
+                }
+                updateDepositSummary();
+            });
+            
+            // 商用费开关
+            const commercialFeeToggle = document.getElementById('enable-commercial-fee');
+            const commercialFeeSettings = document.getElementById('commercial-fee-settings');
+            
+            commercialFeeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    commercialFeeSettings.classList.add('visible');
+                    // 默认选择1.5倍
+                    document.querySelectorAll('#commercial-fee-settings .extra-fee-method-btn')[0].click();
+                    extraFeesSettings.commercialFee.enabled = true;
+                } else {
+                    commercialFeeSettings.classList.remove('visible');
+                    document.getElementById('commercial-fee-summary').classList.remove('visible');
+                    // 清空所有按钮的active状态
+                    document.querySelectorAll('#commercial-fee-settings .extra-fee-method-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    extraFeesSettings.commercialFee.enabled = false;
+                }
+                updateDepositSummary();
+            });
+            
+            // 加急费预设按钮
+            document.querySelectorAll('#rush-fee-settings .extra-fee-method-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 移除其他按钮的active类
+                    document.querySelectorAll('#rush-fee-settings .extra-fee-method-btn').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    
+                    // 给当前按钮添加active类
+                    this.classList.add('active');
+                    
+                    const multiplier = parseFloat(this.dataset.multiplier);
+                    
+                    // 设置倍率
+                    document.getElementById('rush-fee-multiplier').value = multiplier;
+                    
+                    // 更新加急费设置
+                    extraFeesSettings.rushFee.multiplier = multiplier;
+                    extraFeesSettings.rushFee.type = 'multiplier';
+                    
+                    // 更新显示
+                    document.getElementById('rush-fee-multiplier-display').textContent = multiplier;
+                    document.getElementById('rush-fee-summary').classList.add('visible');
+                    
+                    updateDepositSummary();
+                });
+            });
+            
+            // 商用费预设按钮
+            document.querySelectorAll('#commercial-fee-settings .extra-fee-method-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 移除其他按钮的active类
+                    document.querySelectorAll('#commercial-fee-settings .extra-fee-method-btn').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    
+                    // 给当前按钮添加active类
+                    this.classList.add('active');
+                    
+                    const multiplier = parseFloat(this.dataset.multiplier);
+                    
+                    // 设置倍率
+                    document.getElementById('commercial-fee-multiplier').value = multiplier;
+                    
+                    // 更新商用费设置
+                    extraFeesSettings.commercialFee.multiplier = multiplier;
+                    extraFeesSettings.commercialFee.type = 'multiplier';
+                    
+                    // 更新显示
+                    document.getElementById('commercial-fee-multiplier-display').textContent = multiplier;
+                    document.getElementById('commercial-fee-summary').classList.add('visible');
+                    
+                    updateDepositSummary();
+                });
+            });
+            
+            // 加急费自定义输入
+            document.getElementById('rush-fee-multiplier').addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    // 清空预设按钮
+                    document.querySelectorAll('#rush-fee-settings .extra-fee-method-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    const multiplier = parseFloat(this.value) || 1.5;
+                    extraFeesSettings.rushFee.multiplier = Math.max(1, multiplier);
+                    extraFeesSettings.rushFee.type = 'custom';
+                    
+                    // 更新显示
+                    document.getElementById('rush-fee-multiplier-display').textContent = extraFeesSettings.rushFee.multiplier;
+                    document.getElementById('rush-fee-summary').classList.add('visible');
+                    
+                    updateDepositSummary();
+                }
+            });
+            
+            // 商用费自定义输入
+            document.getElementById('commercial-fee-multiplier').addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    // 清空预设按钮
+                    document.querySelectorAll('#commercial-fee-settings .extra-fee-method-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    const multiplier = parseFloat(this.value) || 1.5;
+                    extraFeesSettings.commercialFee.multiplier = Math.max(1, multiplier);
+                    extraFeesSettings.commercialFee.type = 'custom';
+                    
+                    // 更新显示
+                    document.getElementById('commercial-fee-multiplier-display').textContent = extraFeesSettings.commercialFee.multiplier;
+                    document.getElementById('commercial-fee-summary').classList.add('visible');
+                    
+                    updateDepositSummary();
+                }
+            });
+        }
+        
+        function bindDepositEvents() {
+            // 定金开关
+            const depositToggle = document.getElementById('enable-deposit');
+            const depositSettingsDiv = document.getElementById('deposit-settings');
+            
+            depositToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    depositSettingsDiv.classList.add('visible');
+                    // 启用定金功能时，默认选择30%定金
+                    document.querySelector('.deposit-method-btn[data-percent="30"]').click();
+                } else {
+                    depositSettingsDiv.classList.remove('visible');
+                    document.getElementById('deposit-summary').classList.remove('visible');
+                    // 清空所有定金按钮的active状态
+                    document.querySelectorAll('.deposit-method-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    // 清空输入框
+                    document.getElementById('deposit-amount').value = '';
+                    document.getElementById('deposit-percent').value = '';
+                }
+                updateDepositSummary();
+            });
+            
+            // 定金预设按钮
+            document.querySelectorAll('.deposit-method-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 移除其他按钮的active类
+                    document.querySelectorAll('.deposit-method-btn').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    
+                    // 给当前按钮添加active类
+                    this.classList.add('active');
+                    
+                    const percent = parseInt(this.dataset.percent);
+                    
+                    // 设置百分比，清空自定义输入
+                    document.getElementById('deposit-amount').value = '';
+                    document.getElementById('deposit-percent').value = percent;
+                    
+                    // 更新定金设置
+                    depositSettings.percent = percent;
+                    depositSettings.type = 'percent';
+                    depositSettings.amount = 0; // 计算时基于总价
+                    
+                    updateDepositSummary();
+                });
+            });
+            
+            // 自定义金额输入
+            const depositAmountInput = document.getElementById('deposit-amount');
+            const depositPercentInput = document.getElementById('deposit-percent');
+            
+            depositAmountInput.addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    // 清空百分比输入和预设按钮
+                    depositPercentInput.value = '';
+                    clearDepositButtons();
+                    
+                    const amount = parseFloat(this.value) || 0;
+                    depositSettings.amount = amount;
+                    depositSettings.type = 'amount';
+                    depositSettings.percent = 0;
+                    
+                    updateDepositSummary();
+                }
+            });
+            
+            depositPercentInput.addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    // 清空金额输入和预设按钮
+                    depositAmountInput.value = '';
+                    clearDepositButtons();
+                    
+                    const percent = parseFloat(this.value) || 0;
+                    depositSettings.percent = Math.min(100, Math.max(0, percent));
+                    depositSettings.type = 'percent';
+                    depositSettings.amount = 0;
+                    
+                    updateDepositSummary();
+                }
+            });
+        }
+        
+        function clearDepositButtons() {
+            document.querySelectorAll('.deposit-method-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+        }
+        
+        function updateDepositSummary() {
+            const summary = document.getElementById('deposit-summary');
+            
+            // 计算当前应付总价（基于已有的服务计算）
+            let currentTotal = 0;
+            selectedServiceIds.forEach(id => {
+                const priceInput = document.getElementById(`price-${id}`);
+                let price;
+                if (priceInput.value === '' || priceInput.value === '请输入') {
+                    price = 0;
+                } else {
+                    price = parseFloat(priceInput.value) || 0;
+                }
+                
+                const count = parseInt(document.getElementById(`count-${id}`).value) || 1;
+                const discountSelect = document.getElementById(`discount-${id}`);
+                const discountInput = document.getElementById(`discount-input-${id}`);
+                
+                let discountRate;
+                if (discountSelect.value === 'other' && discountInput) {
+                    discountRate = parseFloat(discountInput.value) || 100;
+                } else {
+                    discountRate = parseFloat(discountSelect.value) || 100;
+                }
+                
+                discountRate = Math.max(0, Math.min(100, discountRate));
+                
+                currentTotal += price * count * (discountRate / 100);
+            });
+            
+            // 应用总订单折扣
+            let totalDiscountRate;
+            const totalSelect = document.getElementById('total-discount-select');
+            const totalInput = document.getElementById('total-discount-input');
+            
+            if (totalSelect.value === 'other') {
+                totalDiscountRate = parseFloat(totalInput.value) || 100;
+            } else {
+                totalDiscountRate = parseFloat(totalSelect.value) || 100;
+            }
+            
+            totalDiscountRate = Math.max(0, Math.min(100, totalDiscountRate));
+            let finalPrice = currentTotal * (totalDiscountRate / 100);
+            
+            // 计算额外费用
+            let extraFeesTotal = 0;
+            let extraFeesDetails = [];
+            
+            if (extraFeesSettings.rushFee.enabled) {
+                const rushFee = finalPrice * (extraFeesSettings.rushFee.multiplier - 1);
+                extraFeesTotal += rushFee;
+                extraFeesDetails.push({
+                    name: '加急费',
+                    multiplier: extraFeesSettings.rushFee.multiplier,
+                    amount: rushFee,
+                    description: '在标准交付时间内加快处理'
+                });
+            }
+            
+            if (extraFeesSettings.commercialFee.enabled) {
+                const commercialFee = finalPrice * (extraFeesSettings.commercialFee.multiplier - 1);
+                extraFeesTotal += commercialFee;
+                extraFeesDetails.push({
+                    name: '商用授权费',
+                    multiplier: extraFeesSettings.commercialFee.multiplier,
+                    amount: commercialFee,
+                    description: '用于商业用途（广告、产品包装、出版物等）'
+                });
+            }
+            
+            // 应用额外费用
+            finalPrice += extraFeesTotal;
+            
+            // 计算定金和尾款
+            let depositAmount = 0;
+            let depositPercent = 0;
+            
+            if (depositSettings.enabled) {
+                if (depositSettings.type === 'percent') {
+                    depositPercent = depositSettings.percent;
+                    depositAmount = finalPrice * (depositPercent / 100);
+                } else {
+                    depositAmount = depositSettings.amount;
+                    // 确保定金不超过总价
+                    depositAmount = Math.min(depositAmount, finalPrice);
+                    depositPercent = finalPrice > 0 ? (depositAmount / finalPrice) * 100 : 0;
+                }
+                
+                const balance = Math.max(0, finalPrice - depositAmount);
+                
+                // 更新显示
+                document.getElementById('deposit-total-price').textContent = finalPrice.toFixed(1) + ' 元';
+                document.getElementById('deposit-amount-display').textContent = depositAmount.toFixed(1) + ' 元';
+                document.getElementById('deposit-balance').textContent = balance.toFixed(1) + ' 元';
+                document.getElementById('deposit-final-balance').textContent = balance.toFixed(1) + ' 元';
+                
+                summary.classList.add('visible');
+            } else {
+                summary.classList.remove('visible');
+            }
+            
+            // 更新全局定金设置
+            depositSettings.enabled = document.getElementById('enable-deposit').checked;
+            depositSettings.amount = depositAmount;
+            depositSettings.percent = depositPercent;
+        }
+        
+        function handleFileUpload(files, type) {
+            if (!files || files.length === 0) return;
+            
+            let previewContainer;
+            let imageArray;
+            
+            if (type === 'global') {
+                previewContainer = document.getElementById('global-img-preview');
+                imageArray = globalImages;
+            } else if (type === 'service') {
+                previewContainer = document.getElementById('modal-image-preview');
+                imageArray = serviceImages[currentServiceId] || [];
+                serviceImages[currentServiceId] = imageArray;
+            }
+            
+            // 清空之前的提示
+            if (previewContainer.querySelector('span')) {
+                previewContainer.innerHTML = '';
+            }
+            
+            // 处理每个文件
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                // 检查文件类型
+                if (!file.type.startsWith('image/')) {
+                    alert(`文件"${file.name}"不是图片格式，已跳过`);
+                    continue;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageData = e.target.result;
+                    imageArray.push(imageData);
+                    
+                    // 创建预览
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'preview-item';
+                    const index = imageArray.length - 1;
+                    
+                    if (type === 'global') {
+                        previewItem.innerHTML = `
+                            <img src="${imageData}" alt="参考图片" data-index="${index}" data-type="global">
+                            <div class="remove-img" onclick="removeGlobalImage(${index})">×</div>
+                        `;
+                    } else {
+                        previewItem.innerHTML = `
+                            <img src="${imageData}" alt="服务参考图片" data-index="${index}" data-type="service" data-serviceid="${currentServiceId}">
+                            <div class="remove-img" onclick="removeServiceImage('${currentServiceId}', ${index})">×</div>
+                        `;
+                    }
+                    
+                    previewContainer.appendChild(previewItem);
+                    
+                    // 添加点击预览事件
+                    const imgElement = previewItem.querySelector('img');
+                    imgElement.addEventListener('click', function(e) {
+                        if (e.target.classList.contains('remove-img')) return;
+                        
+                        if (type === 'global') {
+                            openImagePreview(globalImages, parseInt(this.dataset.index), 'global');
+                        } else {
+                            openImagePreview(serviceImages[currentServiceId], parseInt(this.dataset.index), 'service', currentServiceId);
+                        }
+                    });
+                };
+                reader.onerror = function() {
+                    alert(`读取文件"${file.name}"失败`);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function openImagePreview(images, index, type, serviceId = '') {
+            if (!images || images.length === 0) return;
+            
+            currentPreviewImages = images;
+            currentPreviewIndex = index;
+            currentPreviewType = type;
+            currentPreviewServiceId = serviceId;
+            
+            updatePreviewImage();
+            
+            // 显示导航按钮（多张图片时）
+            const prevBtn = document.getElementById('image-modal-prev');
+            const nextBtn = document.getElementById('image-modal-next');
+            
+            if (images.length > 1) {
+                prevBtn.classList.add('visible');
+                nextBtn.classList.add('visible');
+            } else {
+                prevBtn.classList.remove('visible');
+                nextBtn.classList.remove('visible');
+            }
+            
+            // 显示模态框
+            document.getElementById('image-modal').style.display = 'flex';
+        }
+        
+        function updatePreviewImage() {
+            const modalImg = document.getElementById('image-modal-img');
+            const counter = document.getElementById('image-modal-counter');
+            
+            if (currentPreviewImages && currentPreviewImages[currentPreviewIndex]) {
+                modalImg.src = currentPreviewImages[currentPreviewIndex];
+                counter.textContent = `${currentPreviewIndex + 1} / ${currentPreviewImages.length}`;
+            }
+        }
+        
+        function createServiceItem(id, name, isCustom) {
+            if (!serviceNotes[id]) {
+                serviceNotes[id] = { text: '' };
+            }
+            if (!serviceImages[id]) {
+                serviceImages[id] = [];
+            }
+            
+            const selectedServices = document.getElementById('selectedServices');
+            const emptyTip = selectedServices.querySelector('.empty-tip');
+            if (emptyTip) emptyTip.remove();
+            
+            const item = document.createElement('div');
+            item.className = 'selected-item';
+            item.id = `selected-item-${id}`;
+            
+            // 生成折扣选项HTML
+            const discountOptions = [
+                { value: 100, text: '无折扣' },
+                { value: 95, text: '95折' },
+                { value: 90, text: '9折' },
+                { value: 88, text: '88折' },
+                { value: 85, text: '85折' },
+                { value: 80, text: '8折' },
+                { value: 75, text: '75折' },
+                { value: 70, text: '7折' },
+                { value: 50, text: '5折' }
+            ];
+            
+            let discountOptionsHTML = discountOptions.map(opt => `<option value="${opt.value}">${opt.text}</option>`).join('');
+            discountOptionsHTML += '<option value="other">其他</option>';
+            
+            // 价格输入框改为空白，有placeholder提示
+            item.innerHTML = `
+                <div class="service-header">
+                    <div class="service-name">${name}${isCustom ? ' (自定义)' : ''}</div>
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <input type="number" class="number-input" id="price-${id}" placeholder="请输入" min="0" step="0.1">
+                        <span class="unit">元/张</span>
+                    </div>
+                    <div class="input-group">
+                        <input type="number" class="number-input" id="count-${id}" value="1" min="1" placeholder="数量">
+                        <span class="unit">张</span>
+                    </div>
+                    <div class="input-group" style="flex: 2;">
+                        <select class="discount-select" id="discount-${id}">
+                            ${discountOptionsHTML}
+                        </select>
+                        <input type="number" class="discount-input" id="discount-input-${id}" placeholder="折扣" min="0" max="100" step="0.01" value="100" style="display: none;">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+                <div class="item-actions">
+                    <button class="small-btn note-btn" data-id="${id}" data-name="${name}">添加备注和图片</button>
+                    <button class="small-btn remove-btn" data-id="${id}" data-custom="${isCustom}">移除</button>
+                </div>
+                <div class="subtotal" id="subtotal-${id}">小计：0.0 元（折扣后：0.0 元）</div>
+            `;
+            
+            selectedServices.appendChild(item);
+            
+            // 绑定新元素的事件
+            bindServiceItemEvents(id);
+            updateSubtotal(id);
+            
+            // 更新定金摘要
+            updateDepositSummary();
+        }
+        
+        function bindServiceItemEvents(id) {
+            const priceInput = document.getElementById(`price-${id}`);
+            const countInput = document.getElementById(`count-${id}`);
+            const discountSelect = document.getElementById(`discount-${id}`);
+            const discountInput = document.getElementById(`discount-input-${id}`);
+            
+            // 输入变化更新小计
+            const updateHandler = () => {
+                updateSubtotal(id);
+                // 更新定金摘要
+                updateDepositSummary();
+            };
+            
+            priceInput.addEventListener('input', updateHandler);
+            countInput.addEventListener('input', updateHandler);
+            discountSelect.addEventListener('change', updateHandler);
+            discountInput.addEventListener('input', updateHandler);
+            
+            // 当价格输入框获得焦点时，如果是空的，清空placeholder
+            priceInput.addEventListener('focus', function() {
+                if (this.value === '' || this.value === '0.0') {
+                    this.value = '';
+                    this.placeholder = '';
+                }
+            });
+            
+            // 当价格输入框失去焦点时，如果是空的，恢复placeholder
+            priceInput.addEventListener('blur', function() {
+                if (this.value === '') {
+                    this.placeholder = '请输入';
+                    updateHandler(); // 确保小计更新
+                }
+            });
+            
+            // 折扣选择变化
+            discountSelect.addEventListener('change', function() {
+                discountInput.style.display = this.value === 'other' ? 'block' : 'none';
+                if (this.value !== 'other') {
+                    discountInput.value = this.value;
+                }
+                updateHandler();
+            });
+            
+            // 备注按钮
+            document.querySelector(`button[data-id="${id}"].note-btn`).addEventListener('click', function() {
+                currentServiceId = this.dataset.id;
+                const serviceName = this.dataset.name;
+                
+                document.getElementById('modal-title').textContent = `${serviceName} - 备注和参考图片`;
+                document.getElementById('note-content').value = serviceNotes[currentServiceId]?.text || '';
+                
+                // 加载已有的图片
+                const modalPreview = document.getElementById('modal-image-preview');
+                modalPreview.innerHTML = '';
+                
+                const images = serviceImages[currentServiceId] || [];
+                if (images.length === 0) {
+                    modalPreview.innerHTML = '<span style="color: #999; font-style: italic; grid-column: 1/-1;">未上传图片</span>';
+                } else {
+                    images.forEach((imageData, index) => {
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'preview-item';
+                        previewItem.innerHTML = `
+                            <img src="${imageData}" alt="服务参考图片" data-index="${index}" data-type="service" data-serviceid="${currentServiceId}">
+                            <div class="remove-img" onclick="removeServiceImage('${currentServiceId}', ${index})">×</div>
+                        `;
+                        modalPreview.appendChild(previewItem);
+                        
+                        // 添加点击预览事件
+                        const imgElement = previewItem.querySelector('img');
+                        imgElement.addEventListener('click', function(e) {
+                            if (e.target.classList.contains('remove-img')) return;
+                            openImagePreview(images, parseInt(this.dataset.index), 'service', currentServiceId);
+                        });
+                    });
+                }
+                
+                document.getElementById('note-modal').style.display = 'flex';
+            });
+            
+            // 移除按钮
+            document.querySelector(`button[data-id="${id}"].remove-btn`).addEventListener('click', function() {
+                const id = this.dataset.id;
+                const isCustom = this.dataset.custom === 'true';
+                removeServiceItem(id, isCustom);
+            });
+        }
+        
+        function updateSubtotal(id) {
+            const priceInput = document.getElementById(`price-${id}`);
+            const countInput = document.getElementById(`count-${id}`);
+            const discountSelect = document.getElementById(`discount-${id}`);
+            const discountInput = document.getElementById(`discount-input-${id}`);
+            
+            // 获取价格，如果为空则为0
+            let price;
+            if (priceInput.value === '' || priceInput.value === '请输入') {
+                price = 0;
+            } else {
+                price = parseFloat(priceInput.value) || 0;
+            }
+            
+            const count = parseInt(countInput.value) || 1;
+            
+            let discountRate;
+            if (discountSelect.value === 'other' && discountInput) {
+                discountRate = parseFloat(discountInput.value) || 100;
+            } else {
+                discountRate = parseFloat(discountSelect.value) || 100;
+            }
+            
+            discountRate = Math.max(0, Math.min(100, discountRate));
+            
+            const original = price * count;
+            const discounted = original * (discountRate / 100);
+            
+            const subtotalEl = document.getElementById(`subtotal-${id}`);
+            const noteText = serviceNotes[id]?.text || '';
+            const imagesCount = serviceImages[id]?.length || 0;
+            const notePreview = noteText.length > 20 ? noteText.substring(0, 20) + '...' : noteText;
+            const imageInfo = imagesCount > 0 ? ` (${imagesCount}张图片)` : '';
+            
+            subtotalEl.textContent = `小计：${original.toFixed(1)} 元（折扣后：${discounted.toFixed(1)} 元）${notePreview ? ' | 备注：' + notePreview : ''}${imageInfo}`;
+        }
+        
+        function removeServiceItem(id, isCustom) {
+            const item = document.getElementById(`selected-item-${id}`);
+            if (item) item.remove();
+            
+            selectedServiceIds = selectedServiceIds.filter(serviceId => serviceId !== id);
+            delete serviceNotes[id];
+            delete serviceImages[id];
+            
+            if (!isCustom) {
+                const checkbox = document.querySelector(`.service-checkbox[data-id="${id}"]`);
+                if (checkbox) checkbox.checked = false;
+            }
+            
+            updateEmptyTip();
+            
+            // 更新定金摘要
+            updateDepositSummary();
+        }
+        
+        function clearAllServices() {
+            if (selectedServiceIds.length === 0) return;
+            
+            if (confirm('确定要清空所有已选服务吗？')) {
+                document.querySelectorAll('.service-checkbox').forEach(cb => cb.checked = false);
+                document.getElementById('selectedServices').innerHTML = '<div class="empty-tip">暂无选中服务，请从下方备选池勾选或添加自定义服务</div>';
+                selectedServiceIds = [];
+                
+                // 清空服务备注和图片
+                for (let key in serviceNotes) {
+                    delete serviceNotes[key];
+                }
+                for (let key in serviceImages) {
+                    delete serviceImages[key];
+                }
+                
+                // 清空额外费用设置
+                document.getElementById('enable-rush-fee').checked = false;
+                document.getElementById('rush-fee-settings').classList.remove('visible');
+                document.getElementById('rush-fee-summary').classList.remove('visible');
+                document.querySelectorAll('#rush-fee-settings .extra-fee-method-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                extraFeesSettings.rushFee.enabled = false;
+                
+                document.getElementById('enable-commercial-fee').checked = false;
+                document.getElementById('commercial-fee-settings').classList.remove('visible');
+                document.getElementById('commercial-fee-summary').classList.remove('visible');
+                document.querySelectorAll('#commercial-fee-settings .extra-fee-method-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                extraFeesSettings.commercialFee.enabled = false;
+                
+                // 清空定金设置
+                document.getElementById('enable-deposit').checked = false;
+                document.getElementById('deposit-settings').classList.remove('visible');
+                document.getElementById('deposit-summary').classList.remove('visible');
+                clearDepositButtons();
+                document.getElementById('deposit-amount').value = '';
+                document.getElementById('deposit-percent').value = '';
+                depositSettings.enabled = false;
+                
+                document.getElementById('receipt').classList.remove('visible');
+            }
+        }
+        
+        function showCustomModal() {
+            document.getElementById('custom-name-input').value = '';
+            document.getElementById('custom-name-modal').style.display = 'flex';
+        }
+        
+        function saveCustomService() {
+            const name = document.getElementById('custom-name-input').value.trim();
+            if (!name) {
+                alert('请输入服务名称');
+                return;
+            }
+            
+            const id = customServiceIndex++;
+            selectedServiceIds.push(id.toString());
+            createServiceItem(id.toString(), name, true);
+            document.getElementById('custom-name-modal').style.display = 'none';
+            updateEmptyTip();
+        }
+        
+        function saveNote() {
+            const noteText = document.getElementById('note-content').value.trim();
+            serviceNotes[currentServiceId] = { text: noteText };
+            updateSubtotal(currentServiceId);
+            document.getElementById('note-modal').style.display = 'none';
+        }
+        
+        function calculateTotal() {
+            if (selectedServiceIds.length === 0) {
+                alert('请至少选择一项服务！');
+                return;
+            }
+            
+            let totalOriginal = 0;
+            let totalDiscount = 0;
+            let hasValidPrice = false;
+            const serviceDetails = [];
+            
+            selectedServiceIds.forEach(id => {
+                const priceInput = document.getElementById(`price-${id}`);
+                let price;
+                if (priceInput.value === '' || priceInput.value === '请输入') {
+                    price = 0;
+                } else {
+                    price = parseFloat(priceInput.value) || 0;
+                }
+                
+                const count = parseInt(document.getElementById(`count-${id}`).value) || 1;
+                const discountSelect = document.getElementById(`discount-${id}`);
+                const discountInput = document.getElementById(`discount-input-${id}`);
+                
+                let discountRate;
+                if (discountSelect.value === 'other' && discountInput) {
+                    discountRate = parseFloat(discountInput.value) || 100;
+                } else {
+                    discountRate = parseFloat(discountSelect.value) || 100;
+                }
+                
+                discountRate = Math.max(0, Math.min(100, discountRate));
+                
+                const original = price * count;
+                const discounted = original * (discountRate / 100);
+                
+                totalOriginal += original;
+                totalDiscount += discounted;
+                if (price > 0) hasValidPrice = true;
+                
+                const name = document.querySelector(`#selected-item-${id} .service-name`).textContent.replace(' (自定义)', '');
+                const note = serviceNotes[id]?.text || '';
+                const images = serviceImages[id] || [];
+                
+                let discountText = '';
+                if (discountRate === 100) {
+                    discountText = '无折扣';
+                } else {
+                    discountText = `${(100 - discountRate).toFixed(2)}%`;
+                }
+                
+                serviceDetails.push({
+                    name,
+                    price: price.toFixed(1),
+                    count,
+                    discount: discountText,
+                    note,
+                    images,
+                    subtotal: original.toFixed(1),
+                    discountSubtotal: discounted.toFixed(1),
+                    discountRate,
+                    id: id
+                });
+            });
+            
+            if (!hasValidPrice) {
+                alert('请至少输入一项服务的价格！');
+                return;
+            }
+            
+            // 获取总订单折扣
+            let totalDiscountRate;
+            const totalSelect = document.getElementById('total-discount-select');
+            const totalInput = document.getElementById('total-discount-input');
+            
+            if (totalSelect.value === 'other') {
+                totalDiscountRate = parseFloat(totalInput.value) || 100;
+            } else {
+                totalDiscountRate = parseFloat(totalSelect.value) || 100;
+            }
+            
+            totalDiscountRate = Math.max(0, Math.min(100, totalDiscountRate));
+            let finalPrice = totalDiscount * (totalDiscountRate / 100);
+            
+            // 计算额外费用
+            let extraFeesTotal = 0;
+            let extraFeesDetails = [];
+            
+            if (extraFeesSettings.rushFee.enabled) {
+                const rushFee = finalPrice * (extraFeesSettings.rushFee.multiplier - 1);
+                extraFeesTotal += rushFee;
+                extraFeesDetails.push({
+                    name: '加急费',
+                    multiplier: extraFeesSettings.rushFee.multiplier,
+                    amount: rushFee,
+                    description: '在标准交付时间内加快处理'
+                });
+            }
+            
+            if (extraFeesSettings.commercialFee.enabled) {
+                const commercialFee = finalPrice * (extraFeesSettings.commercialFee.multiplier - 1);
+                extraFeesTotal += commercialFee;
+                extraFeesDetails.push({
+                    name: '商用授权费',
+                    multiplier: extraFeesSettings.commercialFee.multiplier,
+                    amount: commercialFee,
+                    description: '用于商业用途（广告、产品包装、出版物等）'
+                });
+            }
+            
+            // 应用额外费用
+            finalPrice += extraFeesTotal;
+            
+            generateReceipt(serviceDetails, totalOriginal.toFixed(1), totalDiscount.toFixed(1), totalDiscountRate, finalPrice.toFixed(1), extraFeesTotal.toFixed(1), extraFeesDetails);
+        }
+        
+        function generateReceipt(services, originalTotal, discountTotal, totalDiscountRate, finalPrice, extraFeesTotal, extraFeesDetails) {
+            // 设置小票标题
+            const subtitle = document.getElementById('subtitle-input').value.trim() || '修图师';
+            document.getElementById('receipt-subtitle').textContent = `修图师：${subtitle}`;
+            
+            // 设置日期
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('zh-CN', { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('receipt-date').textContent = `生成时间：${dateStr}`;
+            
+            // 清空并添加服务项
+            const receiptServices = document.getElementById('receipt-services');
+            receiptServices.innerHTML = '';
+            
+            services.forEach(service => {
+                const serviceDiv = document.createElement('div');
+                serviceDiv.className = 'receipt-service';
+                
+                let details = `${service.price} 元 × ${service.count} 张`;
+                if (service.discount !== '无折扣') {
+                    details += `（${service.discount}）`;
+                }
+                
+                let subtotalText = service.discountRate !== 100 ? 
+                    `<br>${service.subtotal} 元 → ${service.discountSubtotal} 元` : 
+                    `<br>${service.subtotal} 元`;
+                
+                // 创建图片预览区域
+                let imagesHTML = '';
+                if (service.images.length > 0) {
+                    imagesHTML = `<div class="receipt-image-preview">`;
+                    service.images.forEach((imageData, index) => {
+                        imagesHTML += `
+                            <div class="receipt-image-item" data-index="${index}" data-serviceid="${service.id}">
+                                <img src="${imageData}" alt="服务参考图片">
+                            </div>
+                        `;
+                    });
+                    imagesHTML += `</div>`;
+                }
+                
+                serviceDiv.innerHTML = `
+                    <div>
+                        <div>${service.name}</div>
+                        ${service.note ? `<div style="font-size: 0.9rem; color: #666; margin-top: 3px;">备注：${service.note}</div>` : ''}
+                        ${service.images.length > 0 ? `<div style="font-size: 0.9rem; color: #666; margin-top: 3px;">参考图片：${service.images.length}张</div>` : ''}
+                        ${imagesHTML}
+                    </div>
+                    <div style="text-align: right;">
+                        <div>${details}</div>
+                        <div style="font-size: 0.9rem; color: #666;">${subtotalText}</div>
+                    </div>
+                `;
+                receiptServices.appendChild(serviceDiv);
+                
+                // 为小票中的服务图片添加点击事件
+                if (service.images.length > 0) {
+                    const receiptImageItems = serviceDiv.querySelectorAll('.receipt-image-item');
+                    receiptImageItems.forEach((item, index) => {
+                        item.addEventListener('click', function() {
+                            openImagePreview(service.images, index, 'receipt-service', service.id);
+                        });
+                    });
+                }
+            });
+            
+            // 设置总价
+            document.getElementById('receipt-original-price').textContent = originalTotal + ' 元';
+            document.getElementById('receipt-discount-total').textContent = discountTotal + ' 元';
+            document.getElementById('receipt-extra-fees-total').textContent = extraFeesTotal + ' 元';
+            document.getElementById('receipt-final-price').textContent = finalPrice + ' 元';
+            
+            // 处理额外费用信息
+            const extraFeesSection = document.getElementById('receipt-extra-fees-section');
+            const extraFeesDetailsDiv = document.getElementById('receipt-extra-fees-details');
+            
+            if (extraFeesDetails.length > 0) {
+                extraFeesDetailsDiv.innerHTML = '';
+                
+                extraFeesDetails.forEach(fee => {
+                    const feeDiv = document.createElement('div');
+                    feeDiv.className = 'receipt-extra-fee-row';
+                    feeDiv.innerHTML = `
+                        <div>
+                            <div>${fee.name}（${fee.multiplier}倍）</div>
+                            <div class="receipt-extra-fee-description">${fee.description}</div>
+                        </div>
+                        <div>${fee.amount.toFixed(1)} 元</div>
+                    `;
+                    extraFeesDetailsDiv.appendChild(feeDiv);
+                });
+                
+                extraFeesSection.style.display = 'block';
+            } else {
+                extraFeesSection.style.display = 'none';
+            }
+            
+            // 处理定金信息
+            const depositEnabled = document.getElementById('enable-deposit').checked;
+            const depositSection = document.getElementById('receipt-deposit-section');
+            
+            if (depositEnabled) {
+                // 计算定金和尾款
+                let depositAmount = 0;
+                let depositPercent = 0;
+                
+                if (depositSettings.type === 'percent') {
+                    depositPercent = depositSettings.percent;
+                    depositAmount = parseFloat(finalPrice) * (depositPercent / 100);
+                } else {
+                    depositAmount = depositSettings.amount;
+                    depositPercent = parseFloat(finalPrice) > 0 ? (depositAmount / parseFloat(finalPrice)) * 100 : 0;
+                }
+                
+                const balance = Math.max(0, parseFloat(finalPrice) - depositAmount);
+                
+                // 更新小票中的定金信息
+                document.getElementById('receipt-deposit-amount').textContent = depositAmount.toFixed(1) + ' 元';
+                document.getElementById('receipt-balance-amount').textContent = balance.toFixed(1) + ' 元';
+                document.getElementById('receipt-deposit-percent').textContent = depositPercent.toFixed(1) + '%';
+                
+                depositSection.style.display = 'block';
+            } else {
+                depositSection.style.display = 'none';
+            }
+            
+            // 设置全局备注
+            const noteText = document.getElementById('global-note-input').value.trim() || '无备注';
+            document.getElementById('receipt-notes-content').textContent = noteText;
+            
+            // 设置全局图片
+            const globalImagesGrid = document.getElementById('receipt-global-images-grid');
+            globalImagesGrid.innerHTML = '';
+            
+            if (globalImages.length === 0) {
+                globalImagesGrid.innerHTML = '<span style="color: #999; font-style: italic;">无参考图片</span>';
+            } else {
+                globalImages.forEach((imageData, index) => {
+                    const imgDiv = document.createElement('div');
+                    imgDiv.className = 'preview-item';
+                    imgDiv.innerHTML = `<img src="${imageData}" alt="全局参考图片" data-index="${index}">`;
+                    globalImagesGrid.appendChild(imgDiv);
+                    
+                    // 为小票中的全局图片添加点击事件
+                    imgDiv.addEventListener('click', function() {
+                        openImagePreview(globalImages, index, 'receipt-global');
+                    });
+                });
+            }
+            
+            // 显示小票
+            document.getElementById('receipt').classList.add('visible');
+            
+            // 滚动到小票位置
+            document.getElementById('receipt').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function updateEmptyTip() {
+            const selectedServices = document.getElementById('selectedServices');
+            if (selectedServiceIds.length === 0) {
+                selectedServices.innerHTML = '<div class="empty-tip">暂无选中服务，请从下方备选池勾选或添加自定义服务</div>';
+                document.getElementById('receipt').classList.remove('visible');
+            }
+        }
+        
+        // 全局图片删除函数
+        window.removeGlobalImage = function(index) {
+            if (confirm('确定要删除这张图片吗？')) {
+                // 从数组中移除
+                globalImages.splice(index, 1);
+                
+                // 重新渲染预览
+                const preview = document.getElementById('global-img-preview');
+                preview.innerHTML = '';
+                
+                if (globalImages.length === 0) {
+                    preview.innerHTML = '<span style="color: #999; font-style: italic;">未上传图片</span>';
+                } else {
+                    // 重新添加所有图片
+                    globalImages.forEach((imageData, idx) => {
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'preview-item';
+                        previewItem.innerHTML = `
+                            <img src="${imageData}" alt="参考图片" data-index="${idx}" data-type="global">
+                            <div class="remove-img" onclick="removeGlobalImage(${idx})">×</div>
+                        `;
+                        preview.appendChild(previewItem);
+                        
+                        // 重新添加点击事件
+                        const imgElement = previewItem.querySelector('img');
+                        imgElement.addEventListener('click', function(e) {
+                            if (e.target.classList.contains('remove-img')) return;
+                            openImagePreview(globalImages, parseInt(this.dataset.index), 'global');
+                        });
+                    });
+                }
+            }
+        };
+        
+        // 服务图片删除函数
+        window.removeServiceImage = function(serviceId, index) {
+            if (confirm('确定要删除这张图片吗？')) {
+                // 从数组中移除
+                const images = serviceImages[serviceId];
+                if (images) {
+                    images.splice(index, 1);
+                    
+                    // 重新渲染预览
+                    const preview = document.getElementById('modal-image-preview');
+                    preview.innerHTML = '';
+                    
+                    if (images.length === 0) {
+                        preview.innerHTML = '<span style="color: #999; font-style: italic; grid-column: 1/-1;">未上传图片</span>';
+                    } else {
+                        // 重新添加所有图片
+                        images.forEach((imageData, idx) => {
+                            const previewItem = document.createElement('div');
+                            previewItem.className = 'preview-item';
+                            previewItem.innerHTML = `
+                                <img src="${imageData}" alt="服务参考图片" data-index="${idx}" data-type="service" data-serviceid="${serviceId}">
+                                <div class="remove-img" onclick="removeServiceImage('${serviceId}', ${idx})">×</div>
+                            `;
+                            preview.appendChild(previewItem);
+                            
+                            // 重新添加点击事件
+                            const imgElement = previewItem.querySelector('img');
+                            imgElement.addEventListener('click', function(e) {
+                                if (e.target.classList.contains('remove-img')) return;
+                                openImagePreview(images, parseInt(this.dataset.index), 'service', serviceId);
+                            });
+                        });
+                    }
+                    
+                    // 更新小计显示
+                    updateSubtotal(serviceId);
+                }
+            }
+        };
+    </script>
+</body>
+</html>
